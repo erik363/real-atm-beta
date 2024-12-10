@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ATM Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="atm-panel">
+        <img src="./fleeca-logo.webp" class="watermark" alt="Fleeca Bank">
+        <div id="page"></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!--script src="nui://game/ui/jquery.js" type="text/javascript"></script-->
+    <script>
+        $(document).ready(function() {
+            $.getScript("./script.js");
+        });
+    </script>
+
+    <!--script>
+
+
+
+
+
+
+
+        function selectLanguage(language) {
+            console.log(language);
+            createPinPage();
+        }
+
+        function closeATM() {
+            fetch(`https://full-atm/closeATM`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({})
+            }).then(resp => resp.json()).then(resp => {
+                console.log(resp);
+            });
+        }
+
+        function createFirstPage() {
+            handlers = {};
+            const page = document.getElementById('page');
+            page.innerHTML = "";
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "Welcome to Fleeca Bank";
+            const btn4 = createBtn(4, "Exit", closeATM);
+            const btn7 = createBtn(7, "English", function () { selectLanguage("en") });
+            const btn8 = createBtn(8, "German", function () { selectLanguage("de") });
+
+            page.appendChild(h1);
+            page.appendChild(btn4);
+            page.appendChild(btn7);
+            page.appendChild(btn8);
+        }
+
+        function createPinPage() {
+            handlers = {};
+            const page = document.getElementById('page');
+            page.innerHTML = "";
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "Enter your 4-digit PIN";
+            var input = document.createElement("input");
+            input.type = "password";
+            input.maxLength = 4;
+            input.style.fontSize = "24px";
+            input.style.textAlign = "center";
+            input.id = "pinInput";
+            addHandler(9, function () {
+                $("#pinInput").val($("#pinInput").val() + "1");
+            });
+
+            addHandler(10, function () { $("#pinInput").val($("#pinInput").val() + "2"); });
+            addHandler(11, function () { $("#pinInput").val($("#pinInput").val() + "3"); });
+            addHandler(12, function () { $("#pinInput").val(''); }); //cancel
+            addHandler(13, function () { $("#pinInput").val($("#pinInput").val() + "4"); });
+            addHandler(14, function () { $("#pinInput").val($("#pinInput").val() + "5"); });
+            addHandler(15, function () { $("#pinInput").val($("#pinInput").val() + "6"); });
+            addHandler(16, function () { $("#pinInput").val(''); }); //clear
+            addHandler(17, function () { $("#pinInput").val($("#pinInput").val() + "7"); });
+            addHandler(18, function () { $("#pinInput").val($("#pinInput").val() + "8"); });
+            addHandler(19, function () { $("#pinInput").val($("#pinInput").val() + "9"); });
+            addHandler(20, function () { if ($("#pinInput").val().length === 4) { createThirdPage(); } }); // enter
+            addHandler(21, function () { $("#pinInput").val($("#pinInput").val() + "0"); });
+
+            page.appendChild(h1);
+            page.appendChild(input);
+        }
+
+        function createThirdPage() {
+            const page = document.getElementById('page');
+            page.innerHTML = "";
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "Please select a transaction";
+            const btn1 = createBtn(6, "Deposit", depositPage);
+            const btn2 = createBtn(2, "Withdraw", withdrawPage);
+            const btn4 = createBtn(4, "Exit", exitATM);
+            const btn5 = createBtn(7, "Check Balance", checkBalancePage);
+            const btn6 = createBtn(8, "Change PIN", changepinPage);
+
+            page.appendChild(h1);
+            page.appendChild(btn1);
+            page.appendChild(btn2);
+            page.appendChild(btn4);
+            page.appendChild(btn5);
+            page.appendChild(btn6);
+        }
+
+        function withdrawPage() {
+            const page = $('#page');
+            page.html('');
+            const h1 = $('<h1>').text('Withdraw, Enter the amount you want to withdraw');
+            const input = $('<input>').attr('type', 'number').attr('id', 'withdrawInput').attr('placeholder', 'Amount');
+            const btn = createBtn(7, "Submit", () => { })
+            const btn2 = createBtn(8, "Back", createThirdPage);
+            const btn3 = createBtn(4, "Exit", exitATM);
+
+            page.append(h1);
+            page.append(input);
+            page.append(btn);
+            page.append(btn2);
+            page.append(btn3);
+        }
+
+        function checkBalancePage() {
+            const page = $('#page');
+            page.html('');
+            const h1 = $('<h1>').text('Your balance is: 1000$');
+            const btn = createBtn(4, "Exit", exitATM);
+            const btn2 = createBtn(8, "Back", createThirdPage);
+
+            page.append(h1);
+            page.append(btn);
+            page.append(btn2);
+        }
+
+        function changepinPage() {
+            const page = $('#page');
+            page.html('');
+            const h1 = $('<h1>').text('Change your PIN');
+            const input = $('<input>').attr('type', 'password').attr('id', 'newPinInput').attr('placeholder', 'New PIN');
+            const input2 = $('<input>').attr('type', 'password').attr('id', 'newPinInput2').attr('placeholder', 'Repeat new PIN');
+            const btn = createBtn(7, "Submit", () => { })
+            const btn2 = createBtn(8, "Back", createThirdPage);
+            const btn3 = createBtn(4, "Exit", exitATM);
+
+            page.append(h1);
+            page.append(input);
+            page.append(input2);
+            page.append(btn);
+            page.append(btn2);
+            page.append(btn3);
+        }
+
+
+
+        function depositPage() {
+            const page = $('#page');
+            page.html('');
+            const h1 = $('<h1>').text('Deposit, Enter the amount you want to deposit');
+            const input = $('<input>').attr('type', 'number').attr('id', 'depositInput').attr('placeholder', 'Amount');
+            const btn = createBtn(7, "Submit", () => { })
+            const btn2 = createBtn(8, "Back", createThirdPage);
+            const btn3 = createBtn(4, "Exit", exitATM);
+
+            page.append(h1);
+            page.append(input);
+            page.append(btn);
+            page.append(btn2);
+            page.append(btn3);
+        }
+
+        createFirstPage();
+
+        fetch(`https://full-atm/duiIsReady`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({ ok: true })
+        });
+
+        function exitATM() {
+            closeATM();
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                exitATM();
+            }
+        });
+
+
+
+
+
+    </script-->
+
+</body>
+
+</html>
